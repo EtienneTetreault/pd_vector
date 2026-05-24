@@ -13,7 +13,7 @@ import pandas as pd
 #   - the "vector_array_dtype" dtype with pandas
 #   - the .vect accessor on every pd.Series
 import pd_vector
-from pd_vector import VectorArray
+from pd_vector import VectorArray  # Facultative! Only if you want to build VectorArray BEFORE converting the Dataframe
 
 # ---------------------------------------------------------------------------
 # Helper
@@ -30,18 +30,17 @@ def section(title: str) -> None:
 # ---------------------------------------------------------------------------
 
 section("1. Constructing vector Series")
-
-velocities = pd.Series(
-    VectorArray._from_sequence([
+# Method 1 (recommended) : create a pd.Series with list of list, THEN convert to 'vector' dtype
+velocities = pd.Series([
         [1.0,  0.0, 0.0],
         [0.0,  2.0, 0.0],
         [0.0,  0.0, 3.0],
         [1.0,  1.0, 1.0],
         None,              # missing value
-    ]),
-    name="velocity",
-)
+    ], name="velocity")
+velocities = velocities.astype("vector")  # 'astype' conversion using Dtypes name. No need to import VectorArray
 
+# Method 2 (need import VectorArray) : create a VectorArray object first, then pass it to pd.Series()
 forces = pd.Series(
     VectorArray._from_sequence([
         [0.0,  1.0, 0.0],
@@ -49,9 +48,7 @@ forces = pd.Series(
         [1.0,  0.0, 0.0],
         [2.0, -1.0, 0.5],
         [1.0,  0.0, 0.0],
-    ]),
-    name="force",
-)
+    ]), name="force")
 
 print("velocities:\n", velocities)
 print("\nforces:\n", forces)
